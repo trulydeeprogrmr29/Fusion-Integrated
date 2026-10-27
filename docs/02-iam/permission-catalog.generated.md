@@ -17,8 +17,8 @@ For the intended taxonomy of modules not yet built, see
 
 | Code | What it allows | Held by |
 |---|---|---|
-| `elm.leave_request.view` | See leave requests | `staff` |
-| `elm.leave_request.manage` | Create, update and delete leave requests | `staff` |
+| `elm.leave_request.view` | See leave requests | `faculty`, `staff` |
+| `elm.leave_request.manage` | Submit and withdraw own leave requests | `faculty`, `staff` |
 
 ## `placement_cell`
 

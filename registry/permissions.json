@@ -36,18 +36,32 @@
     },
     "elm": {
       "grants": {
+        "faculty": [
+          "elm.leave_request.manage",
+          "elm.leave_request.view"
+        ],
         "staff": [
           "elm.leave_request.manage",
           "elm.leave_request.view"
         ]
       },
       "module_grants": [
+        "faculty",
         "staff"
       ],
       "nav": {
         "base_path": "/elm",
-        "icon": "CalendarCheck",
-        "items": [],
+        "icon": "FaCalendarAlt",
+        "items": [
+          {
+            "code": "elm.leave-requests",
+            "icon": "FaCalendarAlt",
+            "label": "My Leave Requests",
+            "required_permission": "elm.leave_request.view",
+            "sort_order": 10,
+            "to": "/elm/leave-requests"
+          }
+        ],
         "label": "Employee Leave Management",
         "nav_section": "HR",
         "sort_order": 10,
@@ -60,7 +74,7 @@
         },
         {
           "code": "elm.leave_request.manage",
-          "label": "Create, update and delete leave requests"
+          "label": "Submit and withdraw own leave requests"
         }
       ],
       "scope_permissions": [],

@@ -215,6 +215,39 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/elm/leave-requests/{id}/withdraw/:
+    post:
+      operationId: v1_elm_leave_requests_withdraw_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Leave Request.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaveRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LeaveRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LeaveRequest'
+        required: true
+      security:
+      - iamSession: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeaveRequest'
+          description: ''
   /api/v1/me:
     get:
       operationId: v1_me_retrieve
@@ -2246,7 +2279,7 @@ components:
       description: |-
         * `CL` - Casual Leave
         * `RH` - Restricted Holiday
-        * `SCL` - Special Conduct Leave
+        * `SCL` - Special Casual Leave
         * `EL` - Earned Leave
         * `COL` - Compensatory Off Leave
         * `VL` - Vacation Leave
@@ -2483,6 +2516,16 @@ components:
         * `consent_failure` - Did not appear after consenting (r19)
         * `code_of_conduct` - Code of conduct (r21)
         * `misrepresentation` - False resume or unfair means (r18)
+    DayPartEnum:
+      enum:
+      - full_day
+      - first_half
+      - second_half
+      type: string
+      description: |-
+        * `full_day` - Full day
+        * `first_half` - First half
+        * `second_half` - Second half
     Detail:
       type: object
       properties:
@@ -2575,6 +2618,14 @@ components:
       - season_decision
       - semester
       - standing
+    EventTypeEnum:
+      enum:
+      - submitted
+      - withdrawn
+      type: string
+      description: |-
+        * `submitted` - Submitted
+        * `withdrawn` - Withdrawn
     FeeApproval:
       type: object
       description: Rules 20 and 21 both require the challan or receipt to be produced.
@@ -2822,11 +2873,20 @@ components:
         end_date:
           type: string
           format: date
+        day_part:
+          allOf:
+          - $ref: '#/components/schemas/DayPartEnum'
+          default: full_day
         reason:
           type: string
         status:
           allOf:
           - $ref: '#/components/schemas/LeaveRequestStatusEnum'
+          readOnly: true
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeaveRequestEvent'
           readOnly: true
         created_at:
           type: string
@@ -2840,24 +2900,49 @@ components:
       - category
       - created_at
       - end_date
+      - events
       - id
       - reason
       - start_date
       - status
       - updated_at
       - user_id
+    LeaveRequestEvent:
+      type: object
+      properties:
+        event_type:
+          allOf:
+          - $ref: '#/components/schemas/EventTypeEnum'
+          readOnly: true
+        from_status:
+          type: string
+          readOnly: true
+        to_status:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - event_type
+      - from_status
+      - to_status
     LeaveRequestStatusEnum:
       enum:
       - pending
       - approved
       - rejected
       - cancelled
+      - withdrawn
       type: string
       description: |-
         * `pending` - Pending
         * `approved` - Approved
         * `rejected` - Rejected
         * `cancelled` - Cancelled
+        * `withdrawn` - Withdrawn
     LiftSanction:
       type: object
       properties:
@@ -3337,11 +3422,20 @@ components:
         end_date:
           type: string
           format: date
+        day_part:
+          allOf:
+          - $ref: '#/components/schemas/DayPartEnum'
+          default: full_day
         reason:
           type: string
         status:
           allOf:
           - $ref: '#/components/schemas/LeaveRequestStatusEnum'
+          readOnly: true
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeaveRequestEvent'
           readOnly: true
         created_at:
           type: string
